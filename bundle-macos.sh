@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-binary="$1"
-out="$2"
+out="$1"
+binary="$2"
 
 bin_dir="bin"
 dylib_dir="Frameworks/Library.dylib"

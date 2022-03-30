@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-binary="$1"
-out="$2"
+out="$1"
+binary="$2"
 
 bin_dir="bin"
 lib_dir="lib"
@@ -56,7 +56,9 @@ bundleBin() {
     bundleBin "$linked_lib" "lib"
   done
 
-  patchelf --set-rpath "$rpath_prefix" "$copied_file"
+  if [ -n "$linked_libs" ]; then
+    patchelf --set-rpath "$rpath_prefix" "$copied_file"
+  fi
 }
 
 bundleBin "$binary" "exe"
