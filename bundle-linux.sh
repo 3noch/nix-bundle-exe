@@ -10,7 +10,6 @@ lib_dir="lib"
 
 mkdir -p "$out/$bin_dir" "$out/$lib_dir"
 
-# Recursively bundle the given input executable or so
 bundleBin() {
   local file="$1"
   local file_type="$2"
