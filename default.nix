@@ -12,7 +12,7 @@ let
       }
     else if pkgs.stdenv.isLinux then
       {
-        deps = with pkgs; [glibc];
+        deps = [pkgs.glibc];
         script = "bash ${./bundle-linux.sh}";
       }
     else
