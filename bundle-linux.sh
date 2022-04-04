@@ -9,6 +9,10 @@ exe_dir="exe"
 bin_dir="bin"
 lib_dir="lib"
 
+printNeeded() {
+  print-needed-elf "$1" | grep '/nix/store/'
+}
+
 bundleLib() {
   local file="$1"
   local install_dir="$out/$lib_dir"
@@ -43,7 +47,7 @@ bundleLib() {
   echo "Bundling $real_file to $install_dir"
 
   local linked_libs
-  linked_libs=$(ldd "$real_file" 2>/dev/null | grep -Eo '/nix/store/[^(=]+' || true)
+  linked_libs=$(printNeeded "$real_file" || true)
   for linked_lib in $linked_libs; do
     bundleLib "$linked_lib" "lib"
   done
@@ -73,7 +77,7 @@ bundleExe() {
   bundleLib "$interpreter" "lib"
 
   local linked_libs
-  linked_libs=$(ldd "$exe" 2>/dev/null | grep -Eo '/nix/store/[^(=]+' || true)
+  linked_libs=$(printNeeded "$exe" || true)
   for linked_lib in $linked_libs; do
     bundleLib "$linked_lib" "lib"
   done
