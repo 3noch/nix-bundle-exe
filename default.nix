@@ -4,6 +4,10 @@ path: # May be:
       #  2) a path to a directory containing bin/, or
       #  3) a path to an executable.
 let
+  print-needed-elf = pkgs.writeScriptBin
+    "print-needed-elf"
+    '''${pkgs.python3}'/bin/python ${./print_needed_elf.py} "$@"'';
+
   cfg =
     if pkgs.stdenv.isDarwin then
       {
@@ -12,7 +16,7 @@ let
       }
     else if pkgs.stdenv.isLinux then
       {
-        deps = [pkgs.glibc];
+        deps = [pkgs.glibc print-needed-elf];
         script = "bash ${./bundle-linux.sh}";
       }
     else

@@ -10,6 +10,10 @@ dylib_dir="Frameworks/Library.dylib"
 
 mkdir -p "$out/$bin_dir" "$out/$dylib_dir"
 
+printNeeded() {
+  otool -L "$real_file" | tail -n +2 | grep '/nix/store/' | cut -d '(' -f -1
+}
+
 bundleBin() {
   local file="$1"
   local file_type="$2"
@@ -34,7 +38,7 @@ bundleBin() {
   chmod +w "$copied_file"
 
   local linked_libs
-  linked_libs=$(otool -L "$real_file" | tail -n +2 | grep '/nix/store/' | cut -d '(' -f -1 || true)
+  linked_libs=$(printNeeded "$real_file" || true)
   for linked_lib in $linked_libs; do
     local real_lib
     real_lib=$(realpath "$linked_lib")
