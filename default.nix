@@ -12,7 +12,7 @@ let
   cfg =
     if pkgs.stdenv.isDarwin then
       {
-        deps = with pkgs; [ darwin.binutils darwin.sigtool coreutils ];
+        deps = with pkgs; [ darwin.binutils darwin.sigtool ];
         script = "bash ${./bundle-macos.sh}";
       }
     else if pkgs.stdenv.isLinux then
