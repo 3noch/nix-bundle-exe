@@ -47,9 +47,6 @@ bundleBin() {
     install_name_tool -change "$linked_lib" "$rpath_prefix/$real_lib_name" "$copied_file"
     bundleBin "$real_lib" "lib"
   done
-
-  codesign -f -s - "$copied_file"
 }
 
 bundleBin "$binary" "exe"
-find "$out/$bin_dir" -type f -executable -exec codesign -f -s - '{}' \;
