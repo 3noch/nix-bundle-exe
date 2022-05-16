@@ -4,8 +4,6 @@ This is a simple [Nix](https://nixos.org/) derivation to bundle Mach-O (macOS) a
 
 If you are able to build your executable with full static linking, that would be better than using this derivation. For cases where that is too difficult, you can use this.
 
-**NOTE: Linux support is still a work in progress. Bundles may not work on all targets systems, particularly those where `/tmp` is mounted with `noexec`.**
-
 This tool has a very similar goal to [nix-bundle](https://github.com/matthewbauer/nix-bundle) with some key differences:
 
   1. `nix-bundle` works on arbitrary derivations and can bundle any resource, not just shared libraries. This tool only works on executables and their shared libraries.
