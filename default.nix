@@ -26,18 +26,14 @@ let
   name = if pkgs.lib.isDerivation path then path.name else builtins.baseNameOf path;
 in
 pkgs.runCommand "bundle-${name}"
-{
-  nativeBuildInputs = cfg.deps ++ [ pkgs.nukeReferences ];
-}
-  (''
+  {
+    nativeBuildInputs = cfg.deps ++ [ pkgs.nukeReferences ];
+  }
+  ''
     set -euo pipefail
     ${if builtins.pathExists "${path}/bin" then ''
       find '${path}/bin' -type f -executable -print0 | xargs -0 --max-args 1 ${cfg.script} "$out"
     '' else ''
       ${cfg.script} "$out" ${pkgs.lib.escapeShellArg path}
     ''}
-    find "$out" -type f -exec nuke-refs '{}' \;
-  '' + pkgs.lib.optionalString pkgs.stdenv.isDarwin ''
-    find "$out/bin" -type f -executable -exec codesign -f -s - '{}' \;
-    find "$out/Frameworks/Library.dylib" -type f -exec codesign -f -s - '{}' \;
-  '')
+  ''
