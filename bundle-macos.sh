@@ -11,7 +11,12 @@ dylib_dir="Frameworks/Library.dylib"
 mkdir -p "$out/$bin_dir" "$out/$dylib_dir"
 
 printNeeded() {
-  otool -L "$real_file" | tail -n +2 | grep '/nix/store/' | cut -d '(' -f -1
+  otool -L "$1" | tail -n +2 | grep '/nix/store/' | cut -d '(' -f -1
+}
+
+finalizeBin() {
+  nuke-refs "$1"
+  codesign -f -s - "$1"
 }
 
 bundleBin() {
@@ -47,6 +52,8 @@ bundleBin() {
     install_name_tool -change "$linked_lib" "$rpath_prefix/$real_lib_name" "$copied_file"
     bundleBin "$real_lib" "lib"
   done
+
+  finalizeBin "$copied_file"
 }
 
 bundleBin "$binary" "exe"

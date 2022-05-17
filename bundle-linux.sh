@@ -13,6 +13,10 @@ printNeeded() {
   print-needed-elf "$1" | grep '/nix/store/'
 }
 
+finalizeBin() {
+  nuke-refs "$1"
+}
+
 bundleLib() {
   local file="$1"
   local install_dir="$out/$lib_dir"
@@ -55,6 +59,8 @@ bundleLib() {
   if [ -n "$linked_libs" ]; then
     patchelf --set-rpath "\$ORIGIN" "$copied_file"
   fi
+
+  finalizeBin "$copied_file"
 }
 
 bundleExe() {
@@ -67,6 +73,7 @@ bundleExe() {
   cp "$exe" "$copied_exe"
   chmod +w "$copied_exe"
   patchelf --set-interpreter "$(basename "interpreter")" --set-rpath "\$ORIGIN/../$lib_dir" "$copied_exe"
+  finalizeBin "$copied_exe"
 
   bundleLib "$interpreter" "lib"
 

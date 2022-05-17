@@ -10,6 +10,6 @@ jobs:
     - uses: cachix/install-nix-action@v15
       with:
         nix_path: nixpkgs=channel:nixos-unstable
-    - run: nix-build -E 'with import <nixpkgs> {}; callPackage ./. {} gzip'
+    - run: nix-build -E 'with import <nixpkgs> {}; callPackage ./. {} "${gzip}/bin/gzip"' -o result
     - run: result/bin/gzip README.md
     - run: test -f README.md.gz
