@@ -13,3 +13,19 @@ jobs:
     - run: nix-build -E 'with import <nixpkgs> {}; callPackage ./. {} "${gzip}/bin/gzip"' -o result
     - run: result/bin/gzip README.md
     - run: test -f README.md.gz
+    - run: tar cfvz bundle.tar.gz -C result .
+    - uses: actions/upload-artifact@v3
+      with:
+        name: bundle
+        path: bundle.tar.gz
+  run-on-older-libc:
+    needs: ["tests"]
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: bundle
+    - run: mkdir result && tar xfz bundle.tar.gz -C result
+    - run: echo "hello world" > README.md
+    - run: result/bin/gzip README.md
+    - run: test -f README.md.gz
