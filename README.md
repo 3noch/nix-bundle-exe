@@ -20,7 +20,7 @@ nix-build -E 'with import <nixpkgs> {}; callPackage ./. {} opencv'
 
 This will bundle `gzip` only, and not any of its accompanying scripts:
 
-```
+```shell
 nix-build -E 'with import <nixpkgs> {}; callPackage ./. {} "${gzip}/bin/gzip"'
 ```
 
