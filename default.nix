@@ -36,4 +36,5 @@ pkgs.runCommand "bundle-${name}"
     '' else ''
       ${cfg.script} "$out" ${pkgs.lib.escapeShellArg path}
     ''}
+    find $out -empty -type d -delete
   ''
