@@ -16,7 +16,7 @@ printNeeded() {
 
 finalizeBin() {
   nuke-refs "$1"
-  codesign -f -s - "$1"
+  codesign -f -s - "$1" || true
 }
 
 bundleBin() {
