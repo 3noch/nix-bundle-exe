@@ -5,9 +5,16 @@ set -euo pipefail
 out="$1"
 binary="$2"
 
-exe_dir="exe"
-bin_dir="bin"
-lib_dir="lib"
+: "${bin_dir:-}"
+: "${lib_dir:-}"
+: "${exe_dir:-}"
+
+# Converts paths like "folder/bin" to "../.."
+relative_bin_to_lib=$(echo -n "$bin_dir" | sed 's|[^/]*|..|g')
+
+clean_path() {
+  echo -n "$1" | sed 's#//*#/#g'
+}
 
 printNeeded() {
   print-needed-elf "$1" | grep '/nix/store/'
@@ -72,7 +79,9 @@ bundleExe() {
   local copied_exe="$out/$exe_dir/$exe_name"
   cp "$exe" "$copied_exe"
   chmod +w "$copied_exe"
-  patchelf --set-interpreter "$(basename "interpreter")" --set-rpath "\$ORIGIN/../$lib_dir" "$copied_exe"
+  local rpath
+  rpath=$(clean_path "\$ORIGIN/$relative_bin_to_lib/$lib_dir")
+  patchelf --set-interpreter "$(basename "$interpreter")" --set-rpath "$rpath" "$copied_exe"
   finalizeBin "$copied_exe"
 
   bundleLib "$interpreter" "lib"
@@ -83,6 +92,7 @@ bundleExe() {
     bundleLib "$linked_lib" "lib"
   done
 
+  # shellcheck disable=SC2016
   printf '#!/bin/sh
 set -eu
 dir="$(cd -- "$(dirname "$(dirname "$0")")" >/dev/null 2>&1 ; pwd -P)"

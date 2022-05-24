@@ -1,4 +1,8 @@
-{ pkgs }:
+{ pkgs
+, bin_dir ? "bin"
+, exe_dir ? "exe"
+, lib_dir ? if pkgs.stdenv.isDarwin then "Frameworks/Library.dylib" else "lib"
+}:
 path:
 # May be:
 #  1) a derivation,
@@ -24,6 +28,7 @@ let
       throw "Unsupported platform: only darwin and linux are supported";
 
   name = if pkgs.lib.isDerivation path then path.name else builtins.baseNameOf path;
+  overrideEnv = name: value: if value == null then "" else "export ${name}='${value}'";
 in
 pkgs.runCommand "bundle-${name}"
   {
@@ -31,6 +36,9 @@ pkgs.runCommand "bundle-${name}"
   }
   ''
     set -euo pipefail
+    export bin_dir='${bin_dir}'
+    export exe_dir='${exe_dir}'
+    export lib_dir='${lib_dir}'
     ${if builtins.pathExists "${path}/bin" then ''
       find '${path}/bin' -type f -executable -print0 | xargs -0 --max-args 1 ${cfg.script} "$out"
     '' else ''
