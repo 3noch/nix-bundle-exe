@@ -79,7 +79,9 @@ bundleExe() {
   local copied_exe="$out/$exe_dir/$exe_name"
   cp "$exe" "$copied_exe"
   chmod +w "$copied_exe"
-  patchelf --set-interpreter "$(basename "$interpreter")" --set-rpath "\$ORIGIN/../$lib_dir" "$copied_exe"
+  local rpath
+  rpath=$(clean_path "\$ORIGIN/$relative_bin_to_lib/$lib_dir")
+  patchelf --set-interpreter "$(basename "$interpreter")" --set-rpath "$rpath" "$copied_exe"
   finalizeBin "$copied_exe"
 
   bundleLib "$interpreter" "lib"

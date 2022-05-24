@@ -5,10 +5,17 @@ set -euo pipefail
 out="$1"
 binary="$2"
 
-bin_dir="bin"
-dylib_dir="Frameworks/Library.dylib"
+: "${bin_dir:-}"
+: "${lib_dir:-}"
 
-mkdir -p "$out/$bin_dir" "$out/$dylib_dir"
+# Converts paths like "folder/bin" to "../.."
+relative_bin_to_lib=$(echo -n "$bin_dir" | sed 's|[^/]*|..|g')
+
+mkdir -p "$out/$bin_dir" "$out/$lib_dir"
+
+clean_path() {
+  echo -n "$1" | sed 's#//*#/#g'
+}
 
 printNeeded() {
   otool -L "$1" | tail -n +2 | grep '/nix/store/' | cut -d '(' -f -1
@@ -25,11 +32,11 @@ bundleBin() {
 
   local real_file
   real_file=$(realpath "$file")
-  local install_dir="$out/$dylib_dir"
+  local install_dir="$out/$lib_dir"
   local rpath_prefix="@loader_path"
   if [ "$file_type" == "exe" ]; then
     install_dir="$out/$bin_dir"
-    rpath_prefix="@executable_path/../$dylib_dir"
+    rpath_prefix=$(clean_path "@executable_path/$relative_bin_to_lib/$lib_dir")
   fi
 
   local copied_file
