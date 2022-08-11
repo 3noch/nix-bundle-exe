@@ -95,7 +95,7 @@ bundleExe() {
   # shellcheck disable=SC2016
   printf '#!/bin/sh
 set -eu
-dir="$(cd -- "$(dirname "$(dirname "$0")")" >/dev/null 2>&1 ; pwd -P)"
+dir="$(cd -- "$(dirname "$(dirname "$(realpath "$0")")")" >/dev/null 2>&1 ; pwd -P)"
 exec "$dir"/%s "$dir"/%s "$@"' \
   "'$lib_dir/$(basename "$interpreter")'" \
   "'$exe_dir/$exe_name'" \
