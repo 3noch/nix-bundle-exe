@@ -31,14 +31,15 @@ let
   overrideEnv = name: value: if value == null then "" else "export ${name}='${value}'";
 in
 pkgs.runCommand "bundle-${name}"
-  {
-    nativeBuildInputs = cfg.deps ++ [ pkgs.nukeReferences ];
-  }
+{
+  nativeBuildInputs = cfg.deps ++ [ pkgs.nukeReferences ];
+}
   ''
     set -euo pipefail
     export bin_dir='${bin_dir}'
     export exe_dir='${exe_dir}'
     export lib_dir='${lib_dir}'
+    export bintool_prefix='${pkgs.stdenv.cc.bintools.targetPrefix}'
     ${if builtins.pathExists "${path}/bin" then ''
       find '${path}/bin' -type f -executable -print0 | xargs -0 --max-args 1 ${cfg.script} "$out"
     '' else ''
