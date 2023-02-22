@@ -18,7 +18,7 @@ clean_path() {
 }
 
 printNeeded() {
-  ${bintool_prefix}otool -L "$1" | tail -n +2 | grep '/nix/store/' | cut -d '(' -f -1
+  ${target_prefix}otool -L "$1" | tail -n +2 | grep '/nix/store/' | cut -d '(' -f -1
 }
 
 finalizeBin() {
@@ -56,7 +56,7 @@ bundleBin() {
     real_lib=$(realpath "$linked_lib")
     local real_lib_name
     real_lib_name=$(basename "$real_lib")
-    ${bintool_prefix}install_name_tool -change "$linked_lib" "$rpath_prefix/$real_lib_name" "$copied_file"
+    ${target_prefix}install_name_tool -change "$linked_lib" "$rpath_prefix/$real_lib_name" "$copied_file"
     bundleBin "$real_lib" "lib"
   done
 

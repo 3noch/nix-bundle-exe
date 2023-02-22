@@ -39,7 +39,7 @@ pkgs.runCommand "bundle-${name}"
     export bin_dir='${bin_dir}'
     export exe_dir='${exe_dir}'
     export lib_dir='${lib_dir}'
-    export bintool_prefix='${pkgs.stdenv.cc.bintools.targetPrefix}'
+    export target_prefix='${pkgs.stdenv.cc.targetPrefix}'
     ${if builtins.pathExists "${path}/bin" then ''
       find '${path}/bin' -type f -executable -print0 | xargs -0 --max-args 1 ${cfg.script} "$out"
     '' else ''
