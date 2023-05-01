@@ -11,6 +11,8 @@ This tool has a very similar goal to [nix-bundle](https://github.com/matthewbaue
   3. `nix-bundle` requires target systems to have certain Linux kernel features. This tool requires Linux target systems to be POSIX only. macOS targets have no requirements.
   4. `nix-bundle` has some large build-time dependencies which may make it hard to use in CI in some cases. This tool has no additional build-time dependencies.
 
+You may also want to check out [shrinkrap](https://github.com/fzakaria/shrinkwrap).
+
 ## Examples
 
 This will make a bundle of `opencv` where all of its binaries can be run on a system where Nix is not installed.
