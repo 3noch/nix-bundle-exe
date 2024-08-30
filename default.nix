@@ -39,10 +39,10 @@ pkgs.runCommand "bundle-${name}"
     export bin_dir='${bin_dir}'
     export exe_dir='${exe_dir}'
     export lib_dir='${lib_dir}'
-    ${if builtins.pathExists "${path}/bin" then ''
+    if [ -d "${path}/bin" ]; then
       find '${path}/bin' -type f -executable -print0 | xargs -0 --max-args 1 ${cfg.script} "$out"
-    '' else ''
+    else
       ${cfg.script} "$out" ${pkgs.lib.escapeShellArg path}
-    ''}
+    fi
     find $out -empty -type d -delete
   ''
