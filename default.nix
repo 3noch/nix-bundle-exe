@@ -27,10 +27,8 @@ let
     else
       throw "Unsupported platform: only darwin and linux are supported";
 
-  name = if pkgs.lib.isDerivation path then path.name else builtins.baseNameOf path;
-  overrideEnv = name: value: if value == null then "" else "export ${name}='${value}'";
 in
-pkgs.runCommand "bundle-${name}"
+pkgs.runCommand "bundle"
   {
     nativeBuildInputs = cfg.deps ++ [ pkgs.nukeReferences ];
   }
